@@ -1,0 +1,451 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-08-29 12:40:13.877527",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "amount",
+  "currency",
+  "customer",
+  "payment_entry",
+  "column_break_ufbw",
+  "order_status",
+  "amended_from",
+  "payment_method",
+  "payment_service",
+  "column_break_fpdb",
+  "refunded",
+  "amount_refunded",
+  "effective_amount",
+  "transaction_details_section",
+  "txn_id",
+  "txn_uuid",
+  "txn_status",
+  "txn_date",
+  "column_break_sbck",
+  "txn_currency",
+  "txn_net_amount",
+  "txn_supercharge_amount",
+  "txn_tax_amount",
+  "txn_amount",
+  "txn_offer_deduction_amount",
+  "column_break_hzey",
+  "txn_error_code",
+  "txn_error_message",
+  "express_checkout",
+  "section_break_sgwu",
+  "txn_amount_breakup",
+  "refund_details_section",
+  "refunds",
+  "gateway_details_section",
+  "gateway_id",
+  "column_break_xkkw",
+  "gateway_reference_id",
+  "column_break_frrh",
+  "gateway",
+  "card_details_section",
+  "name_on_card",
+  "card_reference",
+  "expiry_year",
+  "expiry_month",
+  "last_four_digits",
+  "saved_to_locker",
+  "using_saved_card",
+  "column_break_likt",
+  "card_issuer",
+  "card_brand",
+  "card_type",
+  "card_isin",
+  "card_fingerprint",
+  "section_break_ijkj",
+  "reference_invoices",
+  "sdk_payload",
+  "response_and_errors_section",
+  "response_code",
+  "response_message",
+  "column_break_fbqz",
+  "bank_error_code",
+  "bank_error_message"
+ ],
+ "fields": [
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount",
+   "reqd": 1
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "payment_entry",
+   "fieldtype": "Link",
+   "label": "Payment Entry",
+   "options": "Payment Entry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_ufbw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "order_status",
+   "fieldtype": "Select",
+   "label": "Order Status",
+   "options": "\nNew\nStarted\nPending\nSuccess\nCard Payment Failed\nFailed\nCancelled\nAuto Refunded"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "HDFC Order",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "section_break_ijkj",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "reference_invoices",
+   "fieldtype": "Table",
+   "label": "Reference Invoices",
+   "options": "HDFC Reference Invoices"
+  },
+  {
+   "fieldname": "sdk_payload",
+   "fieldtype": "JSON",
+   "hidden": 1,
+   "label": "SDK Payload"
+  },
+  {
+   "fieldname": "payment_method",
+   "fieldtype": "Select",
+   "label": "Payment Method",
+   "options": "\nCard\nNetbanking\nWallets\nUPI",
+   "read_only": 1
+  },
+  {
+   "fieldname": "payment_service",
+   "fieldtype": "Data",
+   "label": "Payment Service",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval: payment_method===\"Card\"",
+   "fieldname": "card_details_section",
+   "fieldtype": "Section Break",
+   "label": "Card Details"
+  },
+  {
+   "fieldname": "name_on_card",
+   "fieldtype": "Data",
+   "label": "Name on Card",
+   "read_only": 1
+  },
+  {
+   "fieldname": "card_reference",
+   "fieldtype": "Data",
+   "label": "Card Reference",
+   "read_only": 1
+  },
+  {
+   "fieldname": "expiry_year",
+   "fieldtype": "Data",
+   "label": "Expiry Year",
+   "read_only": 1
+  },
+  {
+   "fieldname": "expiry_month",
+   "fieldtype": "Data",
+   "label": "Expiry Month",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_four_digits",
+   "fieldtype": "Int",
+   "label": "Last Four Digits",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "saved_to_locker",
+   "fieldtype": "Check",
+   "label": "Saved to Locker",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "using_saved_card",
+   "fieldtype": "Check",
+   "label": "Using Saved Card",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_likt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "card_issuer",
+   "fieldtype": "Data",
+   "label": "Card Issuer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "card_brand",
+   "fieldtype": "Data",
+   "label": "Card Brand",
+   "read_only": 1
+  },
+  {
+   "fieldname": "card_type",
+   "fieldtype": "Data",
+   "label": "Card Type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "card_isin",
+   "fieldtype": "Data",
+   "label": "Card ISIN",
+   "read_only": 1
+  },
+  {
+   "fieldname": "card_fingerprint",
+   "fieldtype": "Data",
+   "label": "Card Fingerprint",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "refunded",
+   "fieldtype": "Check",
+   "label": "Refunded"
+  },
+  {
+   "fieldname": "transaction_details_section",
+   "fieldtype": "Section Break",
+   "label": "Transaction Details"
+  },
+  {
+   "fieldname": "txn_id",
+   "fieldtype": "Data",
+   "label": "Txn ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "txn_uuid",
+   "fieldtype": "Data",
+   "label": "Txn UUID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "txn_status",
+   "fieldtype": "Data",
+   "label": "Txn Status",
+   "read_only": 1
+  },
+  {
+   "fieldname": "txn_date",
+   "fieldtype": "Datetime",
+   "label": "Txn Date"
+  },
+  {
+   "fieldname": "column_break_sbck",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "txn_currency",
+   "fieldtype": "Link",
+   "label": "Txn Currency",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "txn_net_amount",
+   "fieldtype": "Currency",
+   "label": "Txn Net Amount",
+   "options": "txn_currency"
+  },
+  {
+   "fieldname": "txn_supercharge_amount",
+   "fieldtype": "Currency",
+   "label": "Txn Supercharge Amount",
+   "options": "txn_currency"
+  },
+  {
+   "fieldname": "txn_tax_amount",
+   "fieldtype": "Currency",
+   "label": "Txn Tax Amount",
+   "options": "txn_currency"
+  },
+  {
+   "fieldname": "txn_amount",
+   "fieldtype": "Currency",
+   "label": "Txn Amount",
+   "options": "txn_currency"
+  },
+  {
+   "fieldname": "txn_offer_deduction_amount",
+   "fieldtype": "Currency",
+   "label": "Txn Offer Deduction Amount",
+   "options": "txn_currency"
+  },
+  {
+   "fieldname": "column_break_hzey",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "txn_error_code",
+   "fieldtype": "Data",
+   "label": "Txn Error Code"
+  },
+  {
+   "fieldname": "txn_error_message",
+   "fieldtype": "Small Text",
+   "label": "Txn Error Message"
+  },
+  {
+   "default": "0",
+   "fieldname": "express_checkout",
+   "fieldtype": "Check",
+   "label": "Express Checkout"
+  },
+  {
+   "fieldname": "gateway_details_section",
+   "fieldtype": "Section Break",
+   "label": "Gateway Details"
+  },
+  {
+   "fieldname": "gateway_id",
+   "fieldtype": "Data",
+   "label": "Gateway ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_xkkw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "gateway_reference_id",
+   "fieldtype": "Data",
+   "label": "Gateway Reference ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_frrh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "gateway",
+   "fieldtype": "Data",
+   "label": "Gateway",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_fpdb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "effective_amount",
+   "fieldtype": "Currency",
+   "label": "Effective Amount",
+   "options": "currency"
+  },
+  {
+   "fieldname": "response_and_errors_section",
+   "fieldtype": "Section Break",
+   "label": "Response and Errors"
+  },
+  {
+   "fieldname": "response_code",
+   "fieldtype": "Data",
+   "label": "Response Code"
+  },
+  {
+   "fieldname": "response_message",
+   "fieldtype": "Text",
+   "label": "Response Message"
+  },
+  {
+   "fieldname": "column_break_fbqz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "bank_error_code",
+   "fieldtype": "Data",
+   "label": "Bank Error Code"
+  },
+  {
+   "fieldname": "bank_error_message",
+   "fieldtype": "Text",
+   "label": "Bank Error Message"
+  },
+  {
+   "fieldname": "section_break_sgwu",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "txn_amount_breakup",
+   "fieldtype": "Table",
+   "label": "Txn Amount Breakup",
+   "options": "HDFC Txn Amount Breakup",
+   "read_only": 1
+  },
+  {
+   "fieldname": "refund_details_section",
+   "fieldtype": "Section Break",
+   "label": "Refund Details"
+  },
+  {
+   "fieldname": "refunds",
+   "fieldtype": "Table",
+   "label": "Refunds",
+   "options": "HDFC Refunds",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amount_refunded",
+   "fieldtype": "Currency",
+   "label": "Amount Refunded",
+   "options": "currency"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-09-01 10:29:10.402268",
+ "modified_by": "Administrator",
+ "module": "HDFC SmartGateway",
+ "name": "HDFC Order",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

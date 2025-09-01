@@ -1,0 +1,124 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-09-01 10:08:07.928040",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "id",
+  "amount",
+  "status",
+  "refund_time",
+  "column_break_reob",
+  "initiated_by",
+  "refund_type",
+  "refund_source",
+  "sent_to_gateway",
+  "column_break_lbfr",
+  "unique_request_id",
+  "ref",
+  "section_break_duub",
+  "error_code",
+  "error_message",
+  "metadata"
+ ],
+ "fields": [
+  {
+   "fieldname": "id",
+   "fieldtype": "Data",
+   "label": "ID",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Status"
+  },
+  {
+   "fieldname": "refund_time",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Refund Time"
+  },
+  {
+   "fieldname": "column_break_reob",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "initiated_by",
+   "fieldtype": "Data",
+   "label": "Initiated By"
+  },
+  {
+   "fieldname": "refund_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Refund Type"
+  },
+  {
+   "fieldname": "refund_source",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Refund Source"
+  },
+  {
+   "default": "0",
+   "fieldname": "sent_to_gateway",
+   "fieldtype": "Check",
+   "label": "Sent to Gateway"
+  },
+  {
+   "fieldname": "column_break_lbfr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "unique_request_id",
+   "fieldtype": "Data",
+   "label": "Unique Request ID"
+  },
+  {
+   "fieldname": "ref",
+   "fieldtype": "Data",
+   "label": "Ref"
+  },
+  {
+   "fieldname": "section_break_duub",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "error_code",
+   "fieldtype": "Data",
+   "label": "Error Code"
+  },
+  {
+   "fieldname": "error_message",
+   "fieldtype": "Small Text",
+   "label": "Error Message"
+  },
+  {
+   "fieldname": "metadata",
+   "fieldtype": "JSON",
+   "label": "Metadata"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-09-01 10:12:44.388061",
+ "modified_by": "Administrator",
+ "module": "HDFC SmartGateway",
+ "name": "HDFC Refunds",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

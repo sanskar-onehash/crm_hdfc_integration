@@ -1,0 +1,77 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-08-29 11:27:37.307278",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "enabled",
+  "merchant_id",
+  "client_id",
+  "api_key",
+  "api_base_uri"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
+  },
+  {
+   "depends_on": "enabled",
+   "fieldname": "merchant_id",
+   "fieldtype": "Data",
+   "label": "Merchant ID",
+   "mandatory_depends_on": "enabled"
+  },
+  {
+   "depends_on": "enabled",
+   "fieldname": "api_key",
+   "fieldtype": "Password",
+   "label": "API Key",
+   "mandatory_depends_on": "enabled"
+  },
+  {
+   "default": "hdfcmaster",
+   "depends_on": "enabled",
+   "description": "<p>For Testing/Sandbox env, use: <code>hdfcmaster</code>. For Production env user your <code>Merchant ID</code> as client id.</p>",
+   "fieldname": "client_id",
+   "fieldtype": "Data",
+   "label": "Client ID",
+   "mandatory_depends_on": "enabled"
+  },
+  {
+   "default": "https://smartgatewayuat.hdfcbank.com/session",
+   "depends_on": "enabled",
+   "description": "<p>For testing the link will be: <code>https://smartgatewayuat.hdfcbank.com/session</code></p>\n<p>For production the link will be: <code>https://smartgateway.hdfcbank.com/session</code></p> You should always recheck with the updated link on HDFC SmartGateway API Documents.<p></p>",
+   "fieldname": "api_base_uri",
+   "fieldtype": "Data",
+   "label": "API Base URI",
+   "mandatory_depends_on": "enabled"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2025-08-29 14:23:14.900677",
+ "modified_by": "Administrator",
+ "module": "HDFC SmartGateway",
+ "name": "HDFC SmartGateway Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
