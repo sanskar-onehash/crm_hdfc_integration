@@ -14,7 +14,7 @@ def create_order_session(
     user_defined_parameters=None,
 ):
     action = CHECKOUT_INTERFACE_ACTION
-    customer_id = customer_details.get("customer_id", default="")
+    customer_id = customer_details.get("customer_id") or ""
     user_defined_parameters = user_defined_parameters or {}
 
     json_data = {

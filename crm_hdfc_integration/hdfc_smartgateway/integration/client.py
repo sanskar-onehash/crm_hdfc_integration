@@ -1,14 +1,14 @@
 import requests
 
-from base64 import b64encode
 from crm_hdfc_integration.hdfc_smartgateway.integration import auth
+from crm_hdfc_integration import utils
 
 
 def get_auth_headers(customer_id=None):
     auth_values = auth.get_auth_details()
     headers = {
-        "x-merchantid": auth_values.merchant_id,
-        "Authorization": f"Basic {b64encode(auth_values.api_key)}",
+        "x-merchantid": auth_values["merchant_id"],
+        "Authorization": f"Basic {utils.get_base64_string(auth_values['api_key'])}",
     }
 
     if customer_id:
