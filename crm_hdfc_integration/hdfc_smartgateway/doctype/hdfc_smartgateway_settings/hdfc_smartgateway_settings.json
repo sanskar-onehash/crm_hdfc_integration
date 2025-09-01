@@ -42,9 +42,9 @@
    "mandatory_depends_on": "enabled"
   },
   {
-   "default": "https://smartgatewayuat.hdfcbank.com/session",
+   "default": "https://smartgatewayuat.hdfcbank.com",
    "depends_on": "enabled",
-   "description": "<p>For testing the link will be: <code>https://smartgatewayuat.hdfcbank.com/session</code></p>\n<p>For production the link will be: <code>https://smartgateway.hdfcbank.com/session</code></p> You should always recheck with the updated link on HDFC SmartGateway API Documents.<p></p>",
+   "description": "<p>For testing the link will be: <code>https://smartgatewayuat.hdfcbank.com</code></p>\n<p>For production the link will be: <code>https://smartgateway.hdfcbank.com</code></p> You should always recheck with the updated link on HDFC SmartGateway API Documents.<p></p>",
    "fieldname": "api_base_uri",
    "fieldtype": "Data",
    "label": "API Base URI",
