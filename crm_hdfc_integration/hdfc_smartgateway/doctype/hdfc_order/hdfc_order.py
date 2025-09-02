@@ -89,7 +89,9 @@ def create_order(
     ).insert()
     frappe.db.commit()
 
-    return hdfc_order.get("sdk_payload")
+    if hdfc_order.get("order_status") == "New":
+        return hdfc_order.get("payment_link")
+    return None
 
 
 def parse_reference_invoices(
