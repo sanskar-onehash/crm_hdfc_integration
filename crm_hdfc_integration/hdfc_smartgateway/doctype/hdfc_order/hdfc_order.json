@@ -82,20 +82,23 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Amount",
-   "reqd": 1
+   "reqd": 1,
+   "set_only_once": 1
   },
   {
    "fieldname": "currency",
    "fieldtype": "Link",
    "label": "Currency",
-   "options": "Currency"
+   "options": "Currency",
+   "set_only_once": 1
   },
   {
    "fieldname": "customer",
    "fieldtype": "Link",
    "label": "Customer",
    "options": "Customer",
-   "reqd": 1
+   "reqd": 1,
+   "set_only_once": 1
   },
   {
    "fieldname": "payment_entry",
@@ -112,7 +115,8 @@
    "fieldname": "order_status",
    "fieldtype": "Select",
    "label": "Order Status",
-   "options": "\nNew\nStarted\nPending\nSuccess\nCard Payment Failed\nFailed\nCancelled\nAuto Refunded"
+   "options": "\nNew\nStarted\nPending\nSuccess\nCard Payment Failed\nFailed\nCancelled\nAuto Refunded",
+   "read_only": 1
   },
   {
    "fieldname": "amended_from",
@@ -138,7 +142,8 @@
    "fieldname": "sdk_payload",
    "fieldtype": "JSON",
    "hidden": 1,
-   "label": "SDK Payload"
+   "label": "SDK Payload",
+   "read_only": 1
   },
   {
    "fieldname": "payment_method",
@@ -241,7 +246,8 @@
    "default": "0",
    "fieldname": "refunded",
    "fieldtype": "Check",
-   "label": "Refunded"
+   "label": "Refunded",
+   "read_only": 1
   },
   {
    "fieldname": "transaction_details_section",
@@ -269,7 +275,8 @@
   {
    "fieldname": "txn_date",
    "fieldtype": "Datetime",
-   "label": "Txn Date"
+   "label": "Txn Date",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_sbck",
@@ -279,37 +286,43 @@
    "fieldname": "txn_currency",
    "fieldtype": "Link",
    "label": "Txn Currency",
-   "options": "Currency"
+   "options": "Currency",
+   "read_only": 1
   },
   {
    "fieldname": "txn_net_amount",
    "fieldtype": "Currency",
    "label": "Txn Net Amount",
-   "options": "txn_currency"
+   "options": "txn_currency",
+   "read_only": 1
   },
   {
    "fieldname": "txn_supercharge_amount",
    "fieldtype": "Currency",
    "label": "Txn Supercharge Amount",
-   "options": "txn_currency"
+   "options": "txn_currency",
+   "read_only": 1
   },
   {
    "fieldname": "txn_tax_amount",
    "fieldtype": "Currency",
    "label": "Txn Tax Amount",
-   "options": "txn_currency"
+   "options": "txn_currency",
+   "read_only": 1
   },
   {
    "fieldname": "txn_amount",
    "fieldtype": "Currency",
    "label": "Txn Amount",
-   "options": "txn_currency"
+   "options": "txn_currency",
+   "read_only": 1
   },
   {
    "fieldname": "txn_offer_deduction_amount",
    "fieldtype": "Currency",
    "label": "Txn Offer Deduction Amount",
-   "options": "txn_currency"
+   "options": "txn_currency",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_hzey",
@@ -318,18 +331,21 @@
   {
    "fieldname": "txn_error_code",
    "fieldtype": "Data",
-   "label": "Txn Error Code"
+   "label": "Txn Error Code",
+   "read_only": 1
   },
   {
    "fieldname": "txn_error_message",
    "fieldtype": "Small Text",
-   "label": "Txn Error Message"
+   "label": "Txn Error Message",
+   "read_only": 1
   },
   {
    "default": "0",
    "fieldname": "express_checkout",
    "fieldtype": "Check",
-   "label": "Express Checkout"
+   "label": "Express Checkout",
+   "read_only": 1
   },
   {
    "fieldname": "gateway_details_section",
@@ -370,9 +386,11 @@
    "fieldname": "effective_amount",
    "fieldtype": "Currency",
    "label": "Effective Amount",
-   "options": "currency"
+   "options": "currency",
+   "read_only": 1
   },
   {
+   "collapsible": 1,
    "fieldname": "response_and_errors_section",
    "fieldtype": "Section Break",
    "label": "Response and Errors"
@@ -380,12 +398,14 @@
   {
    "fieldname": "response_code",
    "fieldtype": "Data",
-   "label": "Response Code"
+   "label": "Response Code",
+   "read_only": 1
   },
   {
    "fieldname": "response_message",
    "fieldtype": "Text",
-   "label": "Response Message"
+   "label": "Response Message",
+   "read_only": 1
   },
   {
    "fieldname": "column_break_fbqz",
@@ -394,12 +414,14 @@
   {
    "fieldname": "bank_error_code",
    "fieldtype": "Data",
-   "label": "Bank Error Code"
+   "label": "Bank Error Code",
+   "read_only": 1
   },
   {
    "fieldname": "bank_error_message",
    "fieldtype": "Text",
-   "label": "Bank Error Message"
+   "label": "Bank Error Message",
+   "read_only": 1
   },
   {
    "fieldname": "section_break_sgwu",
@@ -428,7 +450,8 @@
    "fieldname": "amount_refunded",
    "fieldtype": "Currency",
    "label": "Amount Refunded",
-   "options": "currency"
+   "options": "currency",
+   "read_only": 1
   },
   {
    "fieldname": "user_defined_parameters",
@@ -440,21 +463,22 @@
    "fieldname": "payment_description",
    "fieldtype": "Text",
    "label": "Payment Description",
-   "read_only": 1
+   "set_only_once": 1
   },
   {
    "fieldname": "reference_type",
    "fieldtype": "Link",
    "label": "Reference Type",
    "options": "DocType",
-   "read_only": 1
+   "set_only_once": 1
   },
   {
+   "depends_on": "reference_type",
    "fieldname": "reference_doc",
    "fieldtype": "Dynamic Link",
    "label": "Reference Doc",
    "options": "reference_type",
-   "read_only": 1
+   "set_only_once": 1
   },
   {
    "fieldname": "reference_fieldname",
@@ -479,13 +503,14 @@
    "fieldname": "order_id",
    "fieldtype": "Data",
    "hidden": 1,
-   "label": "Order ID"
+   "label": "Order ID",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-01 15:16:46.748969",
+ "modified": "2025-09-02 11:11:31.517667",
  "modified_by": "Administrator",
  "module": "HDFC SmartGateway",
  "name": "HDFC Order",
