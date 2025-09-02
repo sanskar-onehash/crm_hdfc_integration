@@ -5,19 +5,26 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "order_id",
   "amount",
   "currency",
   "customer",
   "payment_entry",
+  "reference_type",
+  "reference_doc",
+  "reference_fieldname",
   "column_break_ufbw",
   "order_status",
   "amended_from",
   "payment_method",
   "payment_service",
+  "payment_link",
+  "payment_link_expiry",
   "column_break_fpdb",
   "refunded",
   "amount_refunded",
   "effective_amount",
+  "payment_description",
   "transaction_details_section",
   "txn_id",
   "txn_uuid",
@@ -64,6 +71,7 @@
   "response_and_errors_section",
   "response_code",
   "response_message",
+  "user_defined_parameters",
   "column_break_fbqz",
   "bank_error_code",
   "bank_error_message"
@@ -421,12 +429,63 @@
    "fieldtype": "Currency",
    "label": "Amount Refunded",
    "options": "currency"
+  },
+  {
+   "fieldname": "user_defined_parameters",
+   "fieldtype": "JSON",
+   "label": "User Defined Parameters",
+   "read_only": 1
+  },
+  {
+   "fieldname": "payment_description",
+   "fieldtype": "Text",
+   "label": "Payment Description",
+   "read_only": 1
+  },
+  {
+   "fieldname": "reference_type",
+   "fieldtype": "Link",
+   "label": "Reference Type",
+   "options": "DocType",
+   "read_only": 1
+  },
+  {
+   "fieldname": "reference_doc",
+   "fieldtype": "Dynamic Link",
+   "label": "Reference Doc",
+   "options": "reference_type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "reference_fieldname",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Reference Fieldname",
+   "read_only": 1
+  },
+  {
+   "fieldname": "payment_link",
+   "fieldtype": "Data",
+   "label": "Payment LInk",
+   "read_only": 1
+  },
+  {
+   "fieldname": "payment_link_expiry",
+   "fieldtype": "Datetime",
+   "label": "Payment Link Expiry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "order_id",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Order ID"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-01 10:29:10.402268",
+ "modified": "2025-09-01 15:16:46.748969",
  "modified_by": "Administrator",
  "module": "HDFC SmartGateway",
  "name": "HDFC Order",

@@ -1,6 +1,6 @@
 from crm_hdfc_integration import utils
 
-SYSTEM_STATUS_MAP = {
+ORDER_STATUS_MAP = {
     "NEW": "New",
     "STARTED": "Started",
     "PENDING": "Pending",
@@ -11,7 +11,7 @@ SYSTEM_STATUS_MAP = {
     "AUTO_REFUNDED": "Auto Refunded",
 }
 
-SYSTEM_PAYMENT_METHOD_MAP = {
+ORDER_PAYMENT_METHOD_MAP = {
     "NULL": "",
     "CARD": "Card",
     "NET_BANKING": "Netbanking",
@@ -20,59 +20,59 @@ SYSTEM_PAYMENT_METHOD_MAP = {
 }
 
 HDFC_STATUS_ID_MAP = {
-    10: SYSTEM_STATUS_MAP["NEW"],
-    23: SYSTEM_STATUS_MAP["PENDING"],
-    21: SYSTEM_STATUS_MAP["SUCCESS"],
-    25: SYSTEM_STATUS_MAP["PENDING"],  # Authorized
-    22: SYSTEM_STATUS_MAP["CARD_PAYMENT_FAILED"],  # Juspay Declined
-    26: SYSTEM_STATUS_MAP["FAILED"],  # Authentication Failed
-    27: SYSTEM_STATUS_MAP["FAILED"],  # Authorization Failed
-    28: SYSTEM_STATUS_MAP["PENDING"],  # Authorizing
-    31: SYSTEM_STATUS_MAP["CANCELLED"],  # Voided
-    32: SYSTEM_STATUS_MAP["PENDING"],  # Void Initiated
-    33: SYSTEM_STATUS_MAP[
+    10: ORDER_STATUS_MAP["NEW"],
+    23: ORDER_STATUS_MAP["PENDING"],
+    21: ORDER_STATUS_MAP["SUCCESS"],
+    25: ORDER_STATUS_MAP["PENDING"],  # Authorized
+    22: ORDER_STATUS_MAP["CARD_PAYMENT_FAILED"],  # Juspay Declined
+    26: ORDER_STATUS_MAP["FAILED"],  # Authentication Failed
+    27: ORDER_STATUS_MAP["FAILED"],  # Authorization Failed
+    28: ORDER_STATUS_MAP["PENDING"],  # Authorizing
+    31: ORDER_STATUS_MAP["CANCELLED"],  # Voided
+    32: ORDER_STATUS_MAP["PENDING"],  # Void Initiated
+    33: ORDER_STATUS_MAP[
         "PENDING"
     ],  # HDFC uses 33 for both VOID_FAILED and CAPTURE_INITIATED
-    20: SYSTEM_STATUS_MAP["STARTED"],
-    36: SYSTEM_STATUS_MAP["AUTO_REFUNDED"],
-    34: SYSTEM_STATUS_MAP["FAILED"],  # Captured Failed
+    20: ORDER_STATUS_MAP["STARTED"],
+    36: ORDER_STATUS_MAP["AUTO_REFUNDED"],
+    34: ORDER_STATUS_MAP["FAILED"],  # Captured Failed
 }
 
 HDFC_STATUS_MAP = {
-    "NEW": SYSTEM_STATUS_MAP["NEW"],
-    "PENDING_VBV": SYSTEM_STATUS_MAP["PENDING"],
-    "CHARGED": SYSTEM_STATUS_MAP["SUCCESS"],
-    "AUTHORIZED": SYSTEM_STATUS_MAP["PENDING"],  # Authorized
-    "JUSPAY_DECLINED": SYSTEM_STATUS_MAP["CARD_PAYMENT_FAILED"],  # Juspay Declined
-    "AUTHENTICATION_FAILED": SYSTEM_STATUS_MAP["FAILED"],  # Authentication Failed
-    "AUTHORIZATION_FAILED": SYSTEM_STATUS_MAP["FAILED"],  # Authorization Failed
-    "AUTHORIZING": SYSTEM_STATUS_MAP["PENDING"],  # Authorizing
-    "VOIDED": SYSTEM_STATUS_MAP["CANCELLED"],  # Voided
-    "VOID_INITIATED": SYSTEM_STATUS_MAP["PENDING"],  # Void Initiated
-    "VOID_FAILED": SYSTEM_STATUS_MAP[
+    "NEW": ORDER_STATUS_MAP["NEW"],
+    "PENDING_VBV": ORDER_STATUS_MAP["PENDING"],
+    "CHARGED": ORDER_STATUS_MAP["SUCCESS"],
+    "AUTHORIZED": ORDER_STATUS_MAP["PENDING"],  # Authorized
+    "JUSPAY_DECLINED": ORDER_STATUS_MAP["CARD_PAYMENT_FAILED"],  # Juspay Declined
+    "AUTHENTICATION_FAILED": ORDER_STATUS_MAP["FAILED"],  # Authentication Failed
+    "AUTHORIZATION_FAILED": ORDER_STATUS_MAP["FAILED"],  # Authorization Failed
+    "AUTHORIZING": ORDER_STATUS_MAP["PENDING"],  # Authorizing
+    "VOIDED": ORDER_STATUS_MAP["CANCELLED"],  # Voided
+    "VOID_INITIATED": ORDER_STATUS_MAP["PENDING"],  # Void Initiated
+    "VOID_FAILED": ORDER_STATUS_MAP[
         "PENDING"
     ],  # HDFC uses 33 for both VOID_FAILED and CAPTURE_INITIATED
-    "STARTED": SYSTEM_STATUS_MAP["STARTED"],
-    "AUTO_REFUNDED": SYSTEM_STATUS_MAP["AUTO_REFUNDED"],
-    "CAPTURE_INITIATED": SYSTEM_STATUS_MAP["PENDING"],
-    "CAPTURE_FAILED": SYSTEM_STATUS_MAP["FAILED"],  # Captured Failed
+    "STARTED": ORDER_STATUS_MAP["STARTED"],
+    "AUTO_REFUNDED": ORDER_STATUS_MAP["AUTO_REFUNDED"],
+    "CAPTURE_INITIATED": ORDER_STATUS_MAP["PENDING"],
+    "CAPTURE_FAILED": ORDER_STATUS_MAP["FAILED"],  # Captured Failed
 }
 
 HDFC_PAYMENT_METHOD_MAP = {
-    "CARD": SYSTEM_PAYMENT_METHOD_MAP["CARD"],
-    "NB": SYSTEM_PAYMENT_METHOD_MAP["NET_BANKING"],
-    "WALLET": SYSTEM_PAYMENT_METHOD_MAP["WALLET"],
-    "UPI": SYSTEM_PAYMENT_METHOD_MAP["UPI"],
+    "CARD": ORDER_PAYMENT_METHOD_MAP["CARD"],
+    "NB": ORDER_PAYMENT_METHOD_MAP["NET_BANKING"],
+    "WALLET": ORDER_PAYMENT_METHOD_MAP["WALLET"],
+    "UPI": ORDER_PAYMENT_METHOD_MAP["UPI"],
 }
 
 
 def parse_session_res(session_res):
     return {
-        "sdk_payload": session_res.sdk_payload,
-        "payment_link": session_res.payment_links.web,
-        "payment_link_expiry": session_res.payment_links.expiry,
-        "order_id": session_res.order_id,
-        "status": HDFC_STATUS_MAP[session_res.status],
+        "sdk_payload": session_res["sdk_payload"],
+        "payment_link": session_res["payment_links"]["web"],
+        "payment_link_expiry": utils.parse_utc_datetime(session_res["payment_links"]["expiry"]),
+        "order_id": session_res["order_id"],
+        "order_status": HDFC_STATUS_MAP[session_res["status"]],
     }
 
 

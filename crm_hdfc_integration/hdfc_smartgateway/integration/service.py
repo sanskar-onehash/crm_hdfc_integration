@@ -6,7 +6,7 @@ def generate_order_id():
     return utils.generate_order_id()
 
 
-def create_session_order(
+def create_order_session(
     amount,
     customer_details,
     return_url,
