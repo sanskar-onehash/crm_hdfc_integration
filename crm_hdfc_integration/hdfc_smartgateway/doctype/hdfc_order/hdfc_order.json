@@ -74,7 +74,9 @@
   "user_defined_parameters",
   "column_break_fbqz",
   "bank_error_code",
-  "bank_error_message"
+  "bank_error_message",
+  "success_url",
+  "failed_url"
  ],
  "fields": [
   {
@@ -505,12 +507,22 @@
    "hidden": 1,
    "label": "Order ID",
    "read_only": 1
+  },
+  {
+   "fieldname": "success_url",
+   "fieldtype": "Small Text",
+   "label": "Success URL"
+  },
+  {
+   "fieldname": "failed_url",
+   "fieldtype": "Small Text",
+   "label": "Failed URL"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-02 11:11:31.517667",
+ "modified": "2025-09-03 11:12:19.811576",
  "modified_by": "Administrator",
  "module": "HDFC SmartGateway",
  "name": "HDFC Order",

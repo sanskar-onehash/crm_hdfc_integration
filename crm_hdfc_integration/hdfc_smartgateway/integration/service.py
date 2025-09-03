@@ -9,7 +9,6 @@ def generate_order_id():
 def create_order_session(
     amount,
     customer_details,
-    return_url,
     order_id=None,
     currency=None,
     description=None,
@@ -26,7 +25,7 @@ def create_order_session(
         order_id,
         amount,
         customer_details,
-        return_url,
+        utils.get_return_url(),
         page_client_id,
         currency=currency,
         description=description,
@@ -42,3 +41,11 @@ def get_order_status(order_id, customer_id):
     order_status_data = transformers.parse_order_status_res(status_res)
 
     return order_status_data
+
+
+def verify_order():
+    pass
+
+
+def sync_order_status(order_id):
+    pass

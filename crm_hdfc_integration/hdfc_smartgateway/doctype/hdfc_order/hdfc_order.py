@@ -30,12 +30,10 @@ def create_order(
     reference_doctype=None,
     reference_name=None,
     reference_fieldname=None,
-    return_url=None,
+    success_url=None,
+    failed_url=None,
     user_defined_parameters=None,
 ):
-    if not return_url:
-        frappe.throw("return_url is mandatory.")
-
     customer_details = utils.ensure_parsed(customer_details)
     invoices = utils.ensure_parsed(invoices)
 
@@ -60,7 +58,6 @@ def create_order(
     hdfc_order = service.create_order_session(
         amount=order_amount,
         customer_details=customer_details,
-        return_url=return_url,
         order_id=order_id,
         currency=order_currency,
         description=description,
@@ -85,6 +82,8 @@ def create_order(
             "payment_link": hdfc_order.get("payment_link"),
             "payment_link_expiry": hdfc_order.get("payment_link_expiry"),
             "sdk_payload": frappe.json.dumps(hdfc_order.get("sdk_payload")),
+            "success_url": success_url,
+            "failed_url": failed_url,
         }
     ).insert()
     frappe.db.commit()
