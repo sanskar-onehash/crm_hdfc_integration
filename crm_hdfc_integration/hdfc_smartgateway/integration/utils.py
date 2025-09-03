@@ -13,3 +13,7 @@ def get_smartgateway_settings():
         frappe.throw("HDFC SmartGateway is not enabled")
 
     return smartgateway_settings
+
+
+def get_return_url():
+    return f"{frappe.utils.get_url()}/api/method/crm_hdfc_integration.hdcf_smartgateway.integration.service.verify_order"
