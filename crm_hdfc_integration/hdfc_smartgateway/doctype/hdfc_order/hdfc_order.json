@@ -18,7 +18,7 @@
   "column_break_ufbw",
   "order_status",
   "amended_from",
-  "payment_method",
+  "mode_of_payment",
   "payment_service",
   "payment_link",
   "payment_link_expiry",
@@ -147,13 +147,6 @@
    "fieldtype": "JSON",
    "hidden": 1,
    "label": "SDK Payload",
-   "read_only": 1
-  },
-  {
-   "fieldname": "payment_method",
-   "fieldtype": "Select",
-   "label": "Payment Method",
-   "options": "\nCard\nNetbanking\nWallets\nUPI",
    "read_only": 1
   },
   {
@@ -532,12 +525,19 @@
    "fieldtype": "Link",
    "label": "Company Currency",
    "options": "Currency"
+  },
+  {
+   "fieldname": "mode_of_payment",
+   "fieldtype": "Link",
+   "label": "Payment Method",
+   "options": "Mode of Payment",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-04 11:59:13.954194",
+ "modified": "2025-09-04 12:35:29.734145",
  "modified_by": "Administrator",
  "module": "HDFC SmartGateway",
  "name": "HDFC Order",

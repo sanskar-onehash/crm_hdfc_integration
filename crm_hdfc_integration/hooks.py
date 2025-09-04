@@ -83,7 +83,7 @@ app_license = "mit"
 # ------------
 
 # before_install = "crm_hdfc_integration.install.before_install"
-# after_install = "crm_hdfc_integration.install.after_install"
+after_install = "crm_hdfc_integration.install.after_install"
 
 # Uninstallation
 # ------------
