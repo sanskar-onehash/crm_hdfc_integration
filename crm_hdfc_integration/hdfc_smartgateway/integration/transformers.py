@@ -96,7 +96,7 @@ def parse_order_status_res(order_status_res):
         "status": HDFC_STATUS_ID_MAP[order_status_res["status_id"]],
         "amount": order_status_res["amount"],
         "user_defined_values": user_defined_values,
-        "payment_method": HDFC_PAYMENT_METHOD_MAP[
+        "mode_of_payment": HDFC_PAYMENT_METHOD_MAP[
             order_status_res["payment_method_type"]
         ],
         "payment_service": order_status_res["payment_method"],
