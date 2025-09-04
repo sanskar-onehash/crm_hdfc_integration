@@ -13,6 +13,8 @@
   "reference_type",
   "reference_doc",
   "reference_fieldname",
+  "company",
+  "company_currency",
   "column_break_ufbw",
   "order_status",
   "amended_from",
@@ -517,12 +519,25 @@
    "fieldname": "failed_url",
    "fieldtype": "Small Text",
    "label": "Failed URL"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fetch_from": "company.default_currency",
+   "fieldname": "company_currency",
+   "fieldtype": "Link",
+   "label": "Company Currency",
+   "options": "Currency"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-03 11:12:19.811576",
+ "modified": "2025-09-04 11:59:13.954194",
  "modified_by": "Administrator",
  "module": "HDFC SmartGateway",
  "name": "HDFC Order",
