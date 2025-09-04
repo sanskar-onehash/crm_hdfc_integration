@@ -9,7 +9,8 @@
   "merchant_id",
   "client_id",
   "api_key",
-  "api_base_uri"
+  "api_base_uri",
+  "response_key"
  ],
  "fields": [
   {
@@ -42,19 +43,26 @@
    "mandatory_depends_on": "enabled"
   },
   {
-   "default": "https://smartgatewayuat.hdfcbank.com",
+   "default": "https://smartgatewayuat.hdfcbank.com/session",
    "depends_on": "enabled",
-   "description": "<p>For testing the link will be: <code>https://smartgatewayuat.hdfcbank.com</code></p>\n<p>For production the link will be: <code>https://smartgateway.hdfcbank.com</code></p> You should always recheck with the updated link on HDFC SmartGateway API Documents.<p></p>",
+   "description": "<p>For testing the link will be: <code>https://smartgatewayuat.hdfcbank.com/session</code></p>\n<p>For production the link will be: <code>https://smartgateway.hdfcbank.com/session</code></p> You should always recheck with the updated link on HDFC SmartGateway API Documents.<p></p>",
    "fieldname": "api_base_uri",
    "fieldtype": "Data",
    "label": "API Base URI",
+   "mandatory_depends_on": "enabled"
+  },
+  {
+   "depends_on": "enabled",
+   "fieldname": "response_key",
+   "fieldtype": "Data",
+   "label": "Response Key",
    "mandatory_depends_on": "enabled"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-08-29 14:23:14.900677",
+ "modified": "2025-09-04 10:35:23.968591",
  "modified_by": "Administrator",
  "module": "HDFC SmartGateway",
  "name": "HDFC SmartGateway Settings",
