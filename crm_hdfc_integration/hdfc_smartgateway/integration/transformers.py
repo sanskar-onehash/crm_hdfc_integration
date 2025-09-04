@@ -1,3 +1,4 @@
+import frappe
 from crm_hdfc_integration import utils
 
 ORDER_STATUS_MAP = {
@@ -14,8 +15,8 @@ ORDER_STATUS_MAP = {
 ORDER_PAYMENT_METHOD_MAP = {
     "NULL": "",
     "CARD": "Card",
-    "NET_BANKING": "Netbanking",
-    "WALLET": "Wallets",
+    "NET_BANKING": "Net Banking",
+    "WALLET": "Wallet",
     "UPI": "UPI",
 }
 
@@ -66,11 +67,19 @@ HDFC_PAYMENT_METHOD_MAP = {
 }
 
 
+def get_system_status_for_id(hdfc_status_id):
+    if isinstance(hdfc_status_id, str):
+        hdfc_status_id = int(hdfc_status_id)
+    return HDFC_STATUS_ID_MAP[hdfc_status_id]
+
+
 def parse_session_res(session_res):
     return {
         "sdk_payload": session_res["sdk_payload"],
         "payment_link": session_res["payment_links"]["web"],
-        "payment_link_expiry": utils.parse_utc_datetime(session_res["payment_links"]["expiry"]),
+        "payment_link_expiry": utils.parse_utc_datetime(
+            session_res["payment_links"]["expiry"]
+        ),
         "order_id": session_res["order_id"],
         "order_status": HDFC_STATUS_MAP[session_res["status"]],
     }
