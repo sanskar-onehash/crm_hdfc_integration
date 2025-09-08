@@ -102,7 +102,7 @@ def parse_order_status_res(order_status_res):
     txn_details = order_status_res.get("txn_detail") or {}
 
     order_status_data = {
-        "status": HDFC_STATUS_ID_MAP[order_status_res["status_id"]],
+        "order_status": HDFC_STATUS_ID_MAP[order_status_res["status_id"]],
         "amount": order_status_res["amount"],
         "user_defined_values": user_defined_values,
         "mode_of_payment": HDFC_PAYMENT_METHOD_MAP[

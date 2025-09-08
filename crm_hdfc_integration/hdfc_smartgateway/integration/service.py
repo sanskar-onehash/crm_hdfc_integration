@@ -105,12 +105,18 @@ def _sync_order_status(order_id, ignore_permissions=False):
     status_res = api.get_order_status(order_id, order_doc.customer)
     status_data, _ = transformers.parse_order_status_res(status_res)
 
-    if not status_data.get("status"):
+    if not status_data.get("order_status"):
         return
 
-    if order_doc.order_status != status_data["status"]:
+    if order_doc.order_status != status_data["order_status"]:
         order_doc.update(status_data)
-        order_doc.save(ignore_permissions=ignore_permissions)
+        order_doc = order_doc.save(ignore_permissions=ignore_permissions)
+
+        if status_data["order_status"] == "Success":
+            frappe.set_user("Administrator")
+            order_doc.docstatus = 1
+            order_doc._action = "submit"
+            order_doc.save(ignore_permissions=ignore_permissions)
 
         if status_data["status"] == "Success":
             frappe.set_user("Administrator")
