@@ -20,7 +20,9 @@ class HDFCOrder(Document):
         if self.order_status != "Success":
             frappe.throw("Order status should be Success to submit the order.")
 
-        pe = self.create_order_pe(ignore_permissions=True).save(ignore_permissions=True)
+        pe = self.create_order_pe(ignore_permissions=True)
+        pe.run_method("before_submit")
+        pe = pe.save(ignore_permissions=True)
 
         self.set("payment_entry", pe.name)
 
