@@ -43,7 +43,7 @@ class HDFCOrder(Document):
             reference_doc = frappe.get_doc(
                 self.get("reference_type"), self.get("reference_doc")
             )
-            reference_doc.set("reference_fieldname", pe.name)
+            reference_doc.set("reference_fieldname", self.name)
             reference_doc.save(ignore_permissions=True)
 
     def create_order_pe(self, ignore_permissions=False):
