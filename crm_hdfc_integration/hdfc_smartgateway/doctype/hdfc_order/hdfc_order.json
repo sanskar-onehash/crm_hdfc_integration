@@ -22,6 +22,7 @@
   "payment_service",
   "payment_link",
   "payment_link_expiry",
+  "posting_date",
   "column_break_fpdb",
   "refunded",
   "amount_refunded",
@@ -532,12 +533,18 @@
    "label": "Payment Method",
    "options": "Mode of Payment",
    "read_only": 1
+  },
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-04 12:35:29.734145",
+ "modified": "2025-09-11 15:14:04.711530",
  "modified_by": "Administrator",
  "module": "HDFC SmartGateway",
  "name": "HDFC Order",
