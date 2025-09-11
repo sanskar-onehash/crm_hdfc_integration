@@ -10,9 +10,6 @@
   "currency",
   "customer",
   "payment_entry",
-  "reference_type",
-  "reference_doc",
-  "reference_fieldname",
   "company",
   "company_currency",
   "column_break_ufbw",
@@ -28,6 +25,12 @@
   "amount_refunded",
   "effective_amount",
   "payment_description",
+  "section_break_ohvq",
+  "reference_type",
+  "reference_doc",
+  "column_break_jama",
+  "reference_fieldname",
+  "reference_pe_fieldname",
   "transaction_details_section",
   "txn_id",
   "txn_uuid",
@@ -467,6 +470,7 @@
    "fieldname": "reference_type",
    "fieldtype": "Link",
    "label": "Reference Type",
+   "mandatory_depends_on": "eval: doc.reference_fieldname || doc.reference_pe_fieldname",
    "options": "DocType",
    "set_only_once": 1
   },
@@ -475,15 +479,16 @@
    "fieldname": "reference_doc",
    "fieldtype": "Dynamic Link",
    "label": "Reference Doc",
+   "mandatory_depends_on": "eval: doc.reference_fieldname || doc.reference_pe_fieldname",
    "options": "reference_type",
    "set_only_once": 1
   },
   {
+   "depends_on": "reference_doc",
    "fieldname": "reference_fieldname",
    "fieldtype": "Data",
-   "hidden": 1,
    "label": "Reference Fieldname",
-   "read_only": 1
+   "set_only_once": 1
   },
   {
    "fieldname": "payment_link",
@@ -539,12 +544,27 @@
    "fieldtype": "Date",
    "label": "Posting Date",
    "read_only": 1
+  },
+  {
+   "depends_on": "reference_doc",
+   "fieldname": "reference_pe_fieldname",
+   "fieldtype": "Data",
+   "label": "Reference Payment Entry Fieldname",
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "section_break_ohvq",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_jama",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-11 15:14:04.711530",
+ "modified": "2025-09-11 16:14:46.506980",
  "modified_by": "Administrator",
  "module": "HDFC SmartGateway",
  "name": "HDFC Order",

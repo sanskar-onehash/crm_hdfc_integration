@@ -16,6 +16,11 @@ class HDFCOrder(Document):
             self.order_id = service.generate_order_id()
         self.name = self.order_id
 
+    def before_save(self):
+        if self.get("reference_fieldname") or self.get("reference_pe_fieldname"):
+            if not (self.get("reference_type") or self.get("reference_doc")):
+                frappe.throw("Reference Type and Doc are required.")
+
     def before_submit(self):
         if self.order_status != "Success":
             frappe.throw("Order status should be Success to submit the order.")
@@ -26,13 +31,20 @@ class HDFCOrder(Document):
 
         self.set("payment_entry", pe.name)
 
-        if self.get("reference_fieldname"):
-            frappe.db.set_value(
-                self.get("reference_type"),
-                self.get("reference_doc"),
-                self.get("reference_fieldname"),
-                pe.name,
+        if self.get("reference_pe_fieldname"):
+            reference_doc = frappe.get_doc(
+                self.get("reference_type"), self.get("reference_doc")
             )
+            reference_doc.set("reference_pe_fieldname", pe.name)
+            reference_doc.save(ignore_permissions=True)
+
+    def after_insert(self):
+        if self.get("reference_fieldname"):
+            reference_doc = frappe.get_doc(
+                self.get("reference_type"), self.get("reference_doc")
+            )
+            reference_doc.set("reference_fieldname", pe.name)
+            reference_doc.save(ignore_permissions=True)
 
     def create_order_pe(self, ignore_permissions=False):
         pe = get_payment_entry(
