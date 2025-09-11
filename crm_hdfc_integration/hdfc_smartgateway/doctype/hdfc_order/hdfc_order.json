@@ -90,6 +90,7 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Amount",
+   "options": "currency",
    "reqd": 1,
    "set_only_once": 1
   },
@@ -564,7 +565,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-11 16:14:46.506980",
+ "modified": "2025-09-11 16:22:26.840969",
  "modified_by": "Administrator",
  "module": "HDFC SmartGateway",
  "name": "HDFC Order",
