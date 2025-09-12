@@ -122,9 +122,3 @@ def _sync_order_status(order_id, ignore_permissions=False):
             order_doc.docstatus = 1
             order_doc._action = "submit"
             order_doc.save(ignore_permissions=ignore_permissions)
-
-        if status_data["order_status"] == "Success":
-            frappe.set_user("Administrator")
-            order_doc.docstatus = 1
-            order_doc._action = "submit"
-            order_doc.save(ignore_permissions=ignore_permissions)
