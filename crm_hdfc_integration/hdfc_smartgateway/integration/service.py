@@ -105,6 +105,11 @@ def _sync_order_status(order_id, ignore_permissions=False):
     status_res = api.get_order_status(order_id, order_doc.customer)
     status_data, _ = transformers.parse_order_status_res(status_res)
 
+    # Maintain Order Status Response log
+    frappe.get_doc(
+        {"doctype": "HDFC Order Status Logs", "order": order_id, "response": status_res}
+    ).save(ignore_permissions=True)
+
     if not status_data.get("order_status"):
         return
 
