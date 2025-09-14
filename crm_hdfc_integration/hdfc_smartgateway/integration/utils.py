@@ -6,6 +6,7 @@ from urllib.parse import quote_plus
 from frappe.query_builder import Order
 
 ORDER_ID_LENGTH = 15  # 20; -5 for order
+HDFC_WH_ORDER_UDPATED = "HDFC_ORDER_UPDATED_WH"
 
 
 def generate_order_id():

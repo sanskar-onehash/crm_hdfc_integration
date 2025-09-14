@@ -72,7 +72,7 @@ def verify_order():
     )
 
     if new_status and order_doc.order_status != new_status:
-        _sync_order_status(order_id, True)
+        _sync_order_status(order_id, ignore_permissions=True)
 
     # FIXME: Assuming owner of hdfc order will be the payer
     # The following workaround is done as user session is lost
@@ -97,16 +97,31 @@ def sync_order_status(order_id, status=None):
     return None
 
 
-def _sync_order_status(order_id, ignore_permissions=False):
-    order_doc = frappe.get_doc("HDFC Order", order_id)
+def _sync_order_status(order_id=None, status_res=None, ignore_permissions=False):
+    order_doc = None
+    if not status_res:
+        if not order_id:
+            frappe.throw("Order id is required.")
 
-    status_res = api.get_order_status(order_id, order_doc.customer)
+        order_doc = frappe.get_doc("HDFC Order", order_id)
+
+        status_res = api.get_order_status(order_id, order_doc.customer)
+
+        # Maintain Order Status Response log
+        frappe.get_doc(
+            {
+                "doctype": "HDFC Order Status Logs",
+                "order": order_id,
+                "response": status_res,
+            }
+        ).save(ignore_permissions=True)
+    else:
+        order_doc = frappe.get_doc("HDFC Order", status_res.get("order_id"))
+
+    if not order_doc:
+        frappe.throw("No Order Found.")
+
     status_data, _ = transformers.parse_order_status_res(status_res)
-
-    # Maintain Order Status Response log
-    frappe.get_doc(
-        {"doctype": "HDFC Order Status Logs", "order": order_id, "response": status_res}
-    ).save(ignore_permissions=True)
 
     if (
         status_data.get("hdfc_status")
