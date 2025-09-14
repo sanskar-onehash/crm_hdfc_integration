@@ -95,8 +95,13 @@ def verify_order():
 
 
 @frappe.whitelist()
-def sync_order_status(order_id):
-    _sync_order_status(order_id)
+def sync_order_status(order_id, status=None):
+    order_doc = _sync_order_status(order_id)
+
+    if status is None or order_doc.order_status != status:
+        return order_doc.as_dict(convert_dates_to_str=True)
+
+    return None
 
 
 def _sync_order_status(order_id, ignore_permissions=False):
@@ -110,10 +115,10 @@ def _sync_order_status(order_id, ignore_permissions=False):
         {"doctype": "HDFC Order Status Logs", "order": order_id, "response": status_res}
     ).save(ignore_permissions=True)
 
-    if not status_data.get("order_status"):
-        return
-
-    if order_doc.order_status != status_data["order_status"]:
+    if (
+        status_data.get("order_status")
+        and order_doc.order_status != status_data["order_status"]
+    ):
         order_doc.update(status_data)
         order_doc = order_doc.save(ignore_permissions=ignore_permissions)
 
@@ -121,4 +126,6 @@ def _sync_order_status(order_id, ignore_permissions=False):
             frappe.set_user("Administrator")
             order_doc.docstatus = 1
             order_doc._action = "submit"
-            order_doc.save(ignore_permissions=ignore_permissions)
+            order_doc = order_doc.save(ignore_permissions=ignore_permissions)
+
+    return order_doc
