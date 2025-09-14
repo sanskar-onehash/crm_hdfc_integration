@@ -14,6 +14,7 @@
   "company_currency",
   "column_break_ufbw",
   "order_status",
+  "hdfc_status",
   "amended_from",
   "mode_of_payment",
   "payment_service",
@@ -560,12 +561,18 @@
   {
    "fieldname": "column_break_jama",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "hdfc_status",
+   "fieldtype": "Data",
+   "label": "HDFC Status",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-11 16:22:26.840969",
+ "modified": "2025-09-14 09:38:55.307008",
  "modified_by": "Administrator",
  "module": "HDFC SmartGateway",
  "name": "HDFC Order",

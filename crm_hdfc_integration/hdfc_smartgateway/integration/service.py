@@ -37,13 +37,6 @@ def create_order_session(
     return session_data
 
 
-def get_order_status(order_id, customer_id):
-    status_res = api.get_order_status(order_id, customer_id)
-    order_status_data = transformers.parse_order_status_res(status_res)
-
-    return order_status_data
-
-
 @frappe.whitelist(allow_guest=True)
 def verify_order():
     frappe.form_dict.pop("cmd")
@@ -116,8 +109,8 @@ def _sync_order_status(order_id, ignore_permissions=False):
     ).save(ignore_permissions=True)
 
     if (
-        status_data.get("order_status")
-        and order_doc.order_status != status_data["order_status"]
+        status_data.get("hdfc_status")
+        and order_doc.hdfc_status != status_data["hdfc_status"]
     ):
         order_doc.update(status_data)
         order_doc = order_doc.save(ignore_permissions=ignore_permissions)
