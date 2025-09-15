@@ -11,6 +11,7 @@ def handle_order():
 
         frappe.publish_realtime(
             utils.HDFC_WH_ORDER_UDPATED,
-            {"order_id": order_doc.name, "user": order_doc.owner},
+            {"order_id": order_doc.name},
+            user=order_doc.owner,
             after_commit=True,
         )
