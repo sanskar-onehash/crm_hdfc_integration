@@ -186,6 +186,8 @@ def parse_reference_invoices(
         invoice_doc = frappe.get_doc(invoice_type, invoice_id)
         if invoice_doc.docstatus != 1:
             frappe.throw(f"Invoice {invoice_type}:{invoice_id} is not submitted.")
+        if invoice_doc.status == "Paid":
+            frappe.throw("Invoice is already paid.")
 
         invoice_customer = utils.get_or_throw(invoice_doc, "customer")
         invoice_currency = utils.get_or_throw(invoice_doc, "currency")
