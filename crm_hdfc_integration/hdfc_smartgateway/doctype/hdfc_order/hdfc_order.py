@@ -31,19 +31,21 @@ class HDFCOrder(Document):
 
         self.set("payment_entry", pe.name)
 
-        if self.get("reference_pe_fieldname"):
+        reference_pe_fieldname = self.get("reference_pe_fieldname")
+        if reference_pe_fieldname:
             reference_doc = frappe.get_doc(
                 self.get("reference_type"), self.get("reference_doc")
             )
-            reference_doc.set("reference_pe_fieldname", pe.name)
+            reference_doc.set(reference_pe_fieldname, pe.name)
             reference_doc.save(ignore_permissions=True)
 
     def before_insert(self):
-        if self.get("reference_fieldname"):
+        reference_fieldname = self.get("reference_fieldname")
+        if reference_fieldname:
             reference_doc = frappe.get_doc(
                 self.get("reference_type"), self.get("reference_doc")
             )
-            reference_doc.set("reference_fieldname", self.name)
+            reference_doc.set(reference_fieldname, self.name)
             reference_doc.save(ignore_permissions=True)
 
     def create_order_pe(self, ignore_permissions=False):
