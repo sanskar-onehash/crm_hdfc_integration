@@ -38,7 +38,7 @@ class HDFCOrder(Document):
             reference_doc.set("reference_pe_fieldname", pe.name)
             reference_doc.save(ignore_permissions=True)
 
-    def after_insert(self):
+    def before_insert(self):
         if self.get("reference_fieldname"):
             reference_doc = frappe.get_doc(
                 self.get("reference_type"), self.get("reference_doc")
@@ -94,6 +94,7 @@ def create_order(
     reference_doctype=None,
     reference_name=None,
     reference_fieldname=None,
+    reference_pe_fieldname=None,
     success_url=None,
     failed_url=None,
     user_defined_parameters=None,
@@ -131,6 +132,7 @@ def create_order(
             "reference_type": reference_doctype,
             "reference_doc": reference_name,
             "reference_fieldname": reference_fieldname,
+            "reference_pe_fieldname": reference_pe_fieldname,
             "user_defined_parameters": frappe.json.dumps(user_defined_parameters),
             "payment_description": description,
             "success_url": success_url,
