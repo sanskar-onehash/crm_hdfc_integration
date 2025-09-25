@@ -122,6 +122,14 @@ def create_order(
 
     order_id = service.generate_order_id()
 
+    if success_url:
+        separator = "&" if "?" in success_url else "?"
+        success_url += f"{separator}order_id={order_id}"
+
+    if failed_url:
+        separator = "&" if "?" in failed_url else "?"
+        failed_url += f"{separator}order_id={order_id}"
+
     order_doc = frappe.get_doc(
         {
             "doctype": "HDFC Order",
