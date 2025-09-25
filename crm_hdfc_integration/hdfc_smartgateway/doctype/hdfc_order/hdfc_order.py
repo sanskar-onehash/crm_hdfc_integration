@@ -167,8 +167,11 @@ def create_order(
     frappe.db.commit()
 
     if hdfc_order.get("order_status") == "New":
-        return hdfc_order.get("payment_link")
-    return None
+        return {
+            "order_id": hdfc_order.get("order_id"),
+            "payment_link": hdfc_order.get("payment_link"),
+        }
+    return {"order_id": hdfc_order.get("order_id")}
 
 
 def parse_reference_invoices(
