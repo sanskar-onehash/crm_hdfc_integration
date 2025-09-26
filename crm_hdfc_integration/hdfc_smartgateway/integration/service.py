@@ -1,6 +1,7 @@
 import frappe
 from frappe.auth import LoginManager
 from crm_hdfc_integration.hdfc_smartgateway.integration import utils, api, transformers
+from urllib.parse import quote, urlencode
 
 
 def generate_order_id():
@@ -39,10 +40,19 @@ def create_order_session(
 
 @frappe.whitelist(allow_guest=True)
 def verify_order():
+    order_id = frappe.form_dict.get("order_id")
+    order_doc = frappe.get_doc("HDFC Order", order_id)
+
+    if not frappe.form_dict.get("signature_algorithm"):
+        frappe.local.response["type"] = "redirect"
+        frappe.local.response["location"] = "/login?" + urlencode(
+            {"redirect-to": order_doc.failed_url}, quote_via=quote
+        )
+        return
+
     frappe.form_dict.pop("cmd")
     signature_algorithm = frappe.form_dict.pop("signature_algorithm")
     signature = frappe.form_dict.pop("signature")
-    order_id = frappe.form_dict.get("order_id")
 
     if not signature_algorithm:
         frappe.throw("Signature algorithm is required")
@@ -64,8 +74,6 @@ def verify_order():
     )
     if not is_valid_payload:
         frappe.throw("Unathorized, Signature verification failed.")
-
-    order_doc = frappe.get_doc("HDFC Order", order_id)
 
     new_status = transformers.get_system_status_for_id(
         frappe.form_dict.get("status_id")
