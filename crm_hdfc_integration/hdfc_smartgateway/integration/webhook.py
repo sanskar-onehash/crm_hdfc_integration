@@ -10,7 +10,7 @@ def handle_order():
         order_doc = service._sync_order_status(status_res=content.get("order"))
 
         frappe.publish_realtime(
-            utils.HDFC_WH_ORDER_UDPATED,
+            utils.HDFC_WH_ORDER_UPDATED,
             {"order_id": order_doc.name},
             user=order_doc.owner,
             after_commit=True,
