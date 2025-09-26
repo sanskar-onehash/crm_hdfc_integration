@@ -72,7 +72,7 @@ def verify_order():
     )
 
     if new_status and order_doc.order_status != new_status:
-        _sync_order_status(order_id, ignore_permissions=True)
+        _sync_order_status(order_id)
 
     # FIXME: Assuming owner of hdfc order will be the payer
     # The following workaround is done as user session is lost
@@ -97,7 +97,7 @@ def sync_order_status(order_id, status=None):
     return None
 
 
-def _sync_order_status(order_id=None, status_res=None, ignore_permissions=False):
+def _sync_order_status(order_id=None, status_res=None):
     order_doc = None
     if not status_res:
         if not order_id:
@@ -128,12 +128,12 @@ def _sync_order_status(order_id=None, status_res=None, ignore_permissions=False)
         and order_doc.hdfc_status != status_data["hdfc_status"]
     ):
         order_doc.update(status_data)
-        order_doc = order_doc.save(ignore_permissions=ignore_permissions)
+        order_doc = order_doc.save(ignore_permissions=True)
 
         if status_data["order_status"] == "Success":
             frappe.set_user("Administrator")
             order_doc.docstatus = 1
             order_doc._action = "submit"
-            order_doc = order_doc.save(ignore_permissions=ignore_permissions)
+            order_doc = order_doc.save(ignore_permissions=True)
 
     return order_doc
