@@ -40,24 +40,19 @@ def create_order_session(
 
 @frappe.whitelist(allow_guest=True)
 def verify_order():
+    frappe.form_dict.pop("cmd")
+    signature_algorithm = frappe.form_dict.pop("signature_algorithm")
+    signature = frappe.form_dict.pop("signature")
+
     order_id = frappe.form_dict.get("order_id")
     order_doc = frappe.get_doc("HDFC Order", order_id)
 
-    if not frappe.form_dict.get("signature_algorithm"):
+    if not (signature_algorithm or signature):
         frappe.local.response["type"] = "redirect"
         frappe.local.response["location"] = "/login?" + urlencode(
             {"redirect-to": order_doc.failed_url}, quote_via=quote
         )
         return
-
-    frappe.form_dict.pop("cmd")
-    signature_algorithm = frappe.form_dict.pop("signature_algorithm")
-    signature = frappe.form_dict.pop("signature")
-
-    if not signature_algorithm:
-        frappe.throw("Signature algorithm is required")
-    if not signature:
-        frappe.throw("Signature is required.")
     if not order_id:
         frappe.throw("Order Id is required.")
     if signature_algorithm != "HMAC-SHA256":
@@ -84,7 +79,7 @@ def verify_order():
 
     # FIXME: Assuming owner of hdfc order will be the payer
     # The following workaround is done as user session is lost
-    # in hdfc return url, which is handled in this function
+    # in hdfc return url
     user_session_id = utils.get_user_active_sid(order_doc.owner)
     redirect_url = order_doc.success_url or frappe.utils.get_url()
 
