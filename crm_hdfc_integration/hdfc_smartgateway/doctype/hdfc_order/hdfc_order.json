@@ -165,36 +165,42 @@
    "depends_on": "eval: doc.mode_of_payment===\"Card\"",
    "fieldname": "card_details_section",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Card Details"
   },
   {
    "fieldname": "name_on_card",
    "fieldtype": "Data",
    "label": "Name on Card",
+   "permlevel": 1,
    "read_only": 1
   },
   {
    "fieldname": "card_reference",
    "fieldtype": "Data",
    "label": "Card Reference",
+   "permlevel": 1,
    "read_only": 1
   },
   {
    "fieldname": "expiry_year",
    "fieldtype": "Data",
    "label": "Expiry Year",
+   "permlevel": 1,
    "read_only": 1
   },
   {
    "fieldname": "expiry_month",
    "fieldtype": "Data",
    "label": "Expiry Month",
+   "permlevel": 1,
    "read_only": 1
   },
   {
    "fieldname": "last_four_digits",
    "fieldtype": "Int",
    "label": "Last Four Digits",
+   "permlevel": 1,
    "read_only": 1
   },
   {
@@ -202,6 +208,7 @@
    "fieldname": "saved_to_locker",
    "fieldtype": "Check",
    "label": "Saved to Locker",
+   "permlevel": 1,
    "read_only": 1
   },
   {
@@ -209,6 +216,7 @@
    "fieldname": "using_saved_card",
    "fieldtype": "Check",
    "label": "Using Saved Card",
+   "permlevel": 1,
    "read_only": 1
   },
   {
@@ -219,30 +227,35 @@
    "fieldname": "card_issuer",
    "fieldtype": "Data",
    "label": "Card Issuer",
+   "permlevel": 1,
    "read_only": 1
   },
   {
    "fieldname": "card_brand",
    "fieldtype": "Data",
    "label": "Card Brand",
+   "permlevel": 1,
    "read_only": 1
   },
   {
    "fieldname": "card_type",
    "fieldtype": "Data",
    "label": "Card Type",
+   "permlevel": 1,
    "read_only": 1
   },
   {
    "fieldname": "card_isin",
    "fieldtype": "Data",
    "label": "Card ISIN",
+   "permlevel": 1,
    "read_only": 1
   },
   {
    "fieldname": "card_fingerprint",
    "fieldtype": "Data",
    "label": "Card Fingerprint",
+   "permlevel": 1,
    "read_only": 1
   },
   {
@@ -572,7 +585,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-14 09:38:55.307008",
+ "modified": "2025-10-17 09:27:58.380949",
  "modified_by": "Administrator",
  "module": "HDFC SmartGateway",
  "name": "HDFC Order",
