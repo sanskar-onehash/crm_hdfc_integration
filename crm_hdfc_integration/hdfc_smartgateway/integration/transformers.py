@@ -106,17 +106,17 @@ def parse_order_status_res(order_status_res):
         "hdfc_status": order_status_res["status"],
         "amount": order_status_res["amount"],
         "user_defined_values": frappe.as_json(user_defined_values),
-        "mode_of_payment": HDFC_PAYMENT_METHOD_MAP[
-            order_status_res["payment_method_type"]
-        ],
-        "payment_service": order_status_res["payment_method"],
-        "refunded": order_status_res["refunded"],
-        "amount_refunded": order_status_res["amount_refunded"],
-        "effective_amount": order_status_res["effective_amount"],
-        "response_code": order_status_res["resp_code"],
-        "response_message": order_status_res["resp_message"],
-        "bank_error_code": order_status_res["bank_error_code"],
-        "bank_error_message": order_status_res["bank_error_message"],
+        "mode_of_payment": HDFC_PAYMENT_METHOD_MAP.get(
+            order_status_res.get("payment_method_type") or ""
+        ),
+        "payment_service": order_status_res.get("payment_method"),
+        "refunded": order_status_res.get("refunded"),
+        "amount_refunded": order_status_res.get("amount_refunded"),
+        "effective_amount": order_status_res.get("effective_amount"),
+        "response_code": order_status_res.get("resp_code"),
+        "response_message": order_status_res.get("resp_message"),
+        "bank_error_code": order_status_res.get("bank_error_code"),
+        "bank_error_message": order_status_res.get("bank_error_message"),
         "txn_id": txn_details.get("txn_id"),
         "txn_uuid": txn_details.get("txn_uuid"),
         "txn_status": txn_details.get("status"),
@@ -141,8 +141,8 @@ def parse_order_status_res(order_status_res):
             }
             for amnt_break in txn_details.get("txn_amount_breakup") or []
         ],
-        "gateway_id": order_status_res["gateway_id"],
-        "gateway_reference_id": order_status_res["gateway_reference_id"],
+        "gateway_id": order_status_res.get("gateway_id"),
+        "gateway_reference_id": order_status_res.get("gateway_reference_id"),
     }
 
     if order_status_res.get("card"):
