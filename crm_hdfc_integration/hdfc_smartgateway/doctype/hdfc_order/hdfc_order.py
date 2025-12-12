@@ -68,18 +68,26 @@ class HDFCOrder(Document):
                 "reference_no": self.txn_id,
             }
         )
+
+        total_amount = self.amount
         for invoice in self.get("reference_invoices") or []:
             invoice_type = invoice.get("invoice_type")
             invoice_name = invoice.get("invoice")
             invoice_amount = frappe.db.get_value(
-                invoice_type, invoice_name, "grand_total"
+                invoice_type, invoice_name, "outstanding_amount"
             )
+
+            allocated_amount = (
+                invoice_amount if invoice_amount <= total_amount else total_amount
+            )
+            total_amount -= allocated_amount
+
             pe.append(
                 "references",
                 {
                     "reference_doctype": invoice_type,
                     "reference_name": invoice_name,
-                    "allocated_amount": invoice_amount,
+                    "allocated_amount": allocated_amount,
                 },
             )
 
@@ -110,7 +118,8 @@ def create_order(
 
     if invoices:
         parsed = parse_reference_invoices(invoices, order_currency, customer_id)
-        order_amount = parsed["amount"]
+        if not order_amount:
+            order_amount = parsed["amount"]
         order_currency = parsed["currency"]
         invoices = parsed["invoices"]
         company = parsed["company"]
