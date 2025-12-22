@@ -111,6 +111,7 @@ def create_order(
 ):
     customer_details = utils.ensure_parsed(customer_details)
     invoices = utils.ensure_parsed(invoices)
+    order_amount = frappe.utils.flt(order_amount)
 
     customer_id = customer_details.get("customer_id")
     invoices = invoices or []
