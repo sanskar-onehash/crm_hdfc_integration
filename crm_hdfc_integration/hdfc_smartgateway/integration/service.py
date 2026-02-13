@@ -17,7 +17,7 @@ def create_order_session(
     user_defined_parameters=None,
 ):
     page_client_id = frappe.db.get_single_value(
-        "HDFC SmartGateway Settings", "api_base_uri"
+        "HDFC SmartGateway Settings", "client_id"
     )
 
     if not order_id:
