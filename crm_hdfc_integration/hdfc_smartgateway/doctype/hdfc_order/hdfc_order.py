@@ -163,9 +163,12 @@ def create_order(
     if not order_doc.has_permission("create"):
         frappe.throw("User don't have permissions for HDFC Order.")
 
+    hdfc_customer_id = utils.get_hdfc_customer_id(customer_id)
+    hdfc_customer_details = {**customer_details, "customer_id": hdfc_customer_id}
+
     hdfc_order = service.create_order_session(
         amount=order_amount,
-        customer_details=customer_details,
+        customer_details=hdfc_customer_details,
         order_id=order_id,
         currency=order_currency,
         description=description,
@@ -178,6 +181,7 @@ def create_order(
             "payment_link": hdfc_order.get("payment_link"),
             "payment_link_expiry": hdfc_order.get("payment_link_expiry"),
             "sdk_payload": frappe.json.dumps(hdfc_order.get("sdk_payload")),
+            "hdfc_customer_id": hdfc_customer_id,
         }
     )
 

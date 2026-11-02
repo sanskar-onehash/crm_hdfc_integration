@@ -9,6 +9,7 @@
   "amount",
   "currency",
   "customer",
+  "hdfc_customer_id",
   "payment_entry",
   "company",
   "company_currency",
@@ -108,6 +109,13 @@
    "label": "Customer",
    "options": "Customer",
    "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "hdfc_customer_id",
+   "fieldtype": "Data",
+   "label": "HDFC Customer ID",
+   "read_only": 1,
    "set_only_once": 1
   },
   {

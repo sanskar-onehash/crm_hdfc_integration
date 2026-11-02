@@ -7,10 +7,30 @@ from frappe.query_builder import Order
 
 ORDER_ID_LENGTH = 15  # 20; -5 for order
 HDFC_WH_ORDER_UPDATED = "HDFC_ORDER_UPDATED_WH"
+HDFC_CUSTOMER_ID_MAX_LENGTH = 32
 
 
 def generate_order_id():
     return "order" + frappe.generate_hash(length=ORDER_ID_LENGTH)
+
+
+def get_hdfc_customer_id(customer_id):
+    """Return a stable HDFC-safe customer ID without changing the source ID.
+
+    Existing short ASCII IDs are passed through unchanged for backwards
+    compatibility.  Other IDs (for example, names containing accented
+    characters) become a deterministic, ASCII-only identifier suitable for
+    the HDFC request body and HTTP header.
+    """
+    customer_id = str(customer_id or "").strip()
+    if not customer_id:
+        return ""
+
+    if customer_id.isascii() and len(customer_id) <= HDFC_CUSTOMER_ID_MAX_LENGTH:
+        return customer_id
+
+    digest = sha256(customer_id.encode("utf-8")).hexdigest()
+    return f"C{digest[: HDFC_CUSTOMER_ID_MAX_LENGTH - 1]}"
 
 
 def get_smartgateway_settings():

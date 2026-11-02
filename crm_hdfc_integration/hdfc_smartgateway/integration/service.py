@@ -108,7 +108,10 @@ def _sync_order_status(order_id=None, status_res=None):
 
         order_doc = frappe.get_doc("HDFC Order", order_id)
 
-        status_res = api.get_order_status(order_id, order_doc.customer)
+        # New orders retain the exact gateway-safe ID used during session
+        # creation. Legacy orders continue using their original customer ID.
+        customer_id = order_doc.get("hdfc_customer_id") or order_doc.customer
+        status_res = api.get_order_status(order_id, customer_id)
 
         # Maintain Order Status Response log
         frappe.get_doc(
