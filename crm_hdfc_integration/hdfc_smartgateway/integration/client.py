@@ -49,6 +49,7 @@ def make_get_request(
         params=params,
         data=data,
         json=json,
+        timeout=(5, 20),
     )
     res.raise_for_status()
 

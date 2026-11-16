@@ -2,9 +2,12 @@
 # For license information, please see license.txt
 
 import frappe
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
+from math import isfinite
 from frappe.model.document import Document
 from crm_hdfc_integration import utils
 from crm_hdfc_integration.hdfc_smartgateway.integration import service
+from crm_hdfc_integration.hdfc_smartgateway.integration import utils as gateway_utils
 from erpnext import get_default_company
 from erpnext.accounts.doctype.payment_entry.payment_entry import get_payment_entry
 
@@ -111,7 +114,14 @@ def create_order(
 ):
     customer_details = utils.ensure_parsed(customer_details)
     invoices = utils.ensure_parsed(invoices)
-    order_amount = frappe.utils.flt(order_amount)
+    # Zero/omitted amounts still mean "pay all referenced outstanding balances".
+    # Invalid input must not silently turn into zero and charge the full balance.
+    order_amount = _parse_amount(
+        0 if order_amount is None or order_amount == "" else order_amount,
+        "Order amount",
+    )
+    if order_amount < 0:
+        frappe.throw("Order amount must be greater than zero.")
 
     customer_id = customer_details.get("customer_id")
     invoices = invoices or []
@@ -120,12 +130,18 @@ def create_order(
     if invoices:
         parsed = parse_reference_invoices(invoices, order_currency, customer_id)
         if not order_amount:
-            order_amount = parsed["amount"]
+            order_amount = _parse_amount(parsed["amount"], "Outstanding amount")
+        elif order_amount > _parse_amount(parsed["amount"], "Outstanding amount"):
+            frappe.throw("Order amount exceeds the outstanding balance of the selected invoices.")
         order_currency = parsed["currency"]
+        customer_id = parsed["customer"]
+        customer_details = {**customer_details, "customer_id": customer_id}
         invoices = parsed["invoices"]
         company = parsed["company"]
     elif not order_amount:
         frappe.throw("Either invoices or order_amount must be provided.")
+
+    order_amount = float(order_amount)
 
     if not company:
         company = get_default_company()
@@ -163,7 +179,7 @@ def create_order(
     if not order_doc.has_permission("create"):
         frappe.throw("User don't have permissions for HDFC Order.")
 
-    hdfc_customer_id = utils.get_hdfc_customer_id(customer_id)
+    hdfc_customer_id = gateway_utils.get_hdfc_customer_id(customer_id)
     hdfc_customer_details = {**customer_details, "customer_id": hdfc_customer_id}
 
     hdfc_order = service.create_order_session(
@@ -201,13 +217,18 @@ def parse_reference_invoices(
     currency: str,
     customer_id: str | None = None,
 ):
-    amount = 0
+    amount = Decimal("0")
     company = None
     parsed_invoices = []
+    seen_invoices = set()
 
     for invoice in reference_invoices:
         invoice_type = invoice.get("invoice_type", "")
         invoice_id = invoice.get("invoice_id", "")
+        invoice_key = (invoice_type, invoice_id)
+        if invoice_key in seen_invoices:
+            frappe.throw("Duplicate invoice references are not allowed.")
+        seen_invoices.add(invoice_key)
         invoice_doc = frappe.get_doc(invoice_type, invoice_id)
         if invoice_doc.docstatus != 1:
             frappe.throw(f"Invoice {invoice_type}:{invoice_id} is not submitted.")
@@ -216,7 +237,14 @@ def parse_reference_invoices(
 
         invoice_customer = utils.get_or_throw(invoice_doc, "customer")
         invoice_currency = utils.get_or_throw(invoice_doc, "currency")
-        invoice_amount = utils.get_or_throw(invoice_doc, "grand_total")
+        # Outstanding amounts are denominated in the receivable account's
+        # currency. Do not charge those units as the invoice currency.
+        account_currency = invoice_doc.get("party_account_currency")
+        if account_currency and account_currency != invoice_currency:
+            frappe.throw("Invoice and receivable account currencies must match for portal payment.")
+        invoice_amount = _parse_amount(invoice_doc.get("outstanding_amount"), "Outstanding amount")
+        if invoice_amount <= 0:
+            frappe.throw("Selected invoice has no positive outstanding balance.")
         invoice_company = utils.get_or_throw(invoice_doc, "company")
 
         amount += invoice_amount
@@ -238,8 +266,29 @@ def parse_reference_invoices(
 
     return {
         "currency": currency,
-        "amount": amount,
+        "amount": float(amount),
         "customer": customer_id,
         "invoices": parsed_invoices,
         "company": company,
     }
+
+
+def _parse_amount(value, label):
+    """Validate monetary input without silently substituting a full charge."""
+    try:
+        amount = Decimal(str(value))
+        valid = amount.is_finite() and isfinite(float(amount))
+    except (InvalidOperation, ValueError, TypeError, OverflowError):
+        valid = False
+    if not valid:
+        frappe.throw(f"{label} must be a valid finite number.")
+    try:
+        rounded = amount.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    except InvalidOperation:
+        frappe.throw(f"{label} is outside the supported payment range.")
+    # Compare and send the same two-decimal amount supported by the gateway.
+    # In particular, never turn a tiny explicit payment into the zero sentinel
+    # that means "charge the entire outstanding balance".
+    if amount != 0 and rounded == 0:
+        frappe.throw(f"{label} must be at least 0.01.")
+    return rounded

@@ -1,4 +1,5 @@
 import frappe
+from decimal import Decimal, InvalidOperation
 from frappe.auth import LoginManager
 from crm_hdfc_integration.hdfc_smartgateway.integration import utils, api, transformers
 from urllib.parse import quote, urlencode
@@ -40,21 +41,18 @@ def create_order_session(
 
 @frappe.whitelist(allow_guest=True)
 def verify_order():
-    frappe.form_dict.pop("cmd")
-    signature_algorithm = frappe.form_dict.pop("signature_algorithm")
-    signature = frappe.form_dict.pop("signature")
+    frappe.form_dict.pop("cmd", None)
+    signature_algorithm = frappe.form_dict.pop("signature_algorithm", None)
+    signature = frappe.form_dict.pop("signature", None)
 
     order_id = frappe.form_dict.get("order_id")
-    order_doc = frappe.get_doc("HDFC Order", order_id)
-
-    if not (signature_algorithm or signature):
-        frappe.local.response["type"] = "redirect"
-        frappe.local.response["location"] = "/login?" + urlencode(
-            {"redirect-to": order_doc.failed_url}, quote_via=quote
-        )
-        return
     if not order_id:
         frappe.throw("Order Id is required.")
+    order_doc = frappe.get_doc("HDFC Order", order_id)
+
+    if not signature_algorithm or not signature:
+        _redirect_unsigned_return(order_doc)
+        return
     if signature_algorithm != "HMAC-SHA256":
         frappe.log_error(
             "HDFC Order verification invalid algorithm",
@@ -90,6 +88,34 @@ def verify_order():
     frappe.local.response["location"] = redirect_url
 
 
+def _redirect_unsigned_return(order_doc):
+    """Keep the failure fallback without trusting an unsigned payment status."""
+    failed_url = order_doc.failed_url or frappe.utils.get_url()
+
+    if frappe.session.user and frappe.session.user != "Guest":
+        redirect_url = failed_url
+    else:
+        # A cross-site POST may omit a valid browser cookie (SameSite=Lax).
+        # Do not replace it with Guest or delete it. The following top-level
+        # login GET can receive the original cookie and resume it normally.
+        # When an actual expired cookie was sent, retain normal expiry handling.
+        if not frappe.request.cookies.get("sid"):
+            auth_cookies = {"sid", "full_name", "user_id", "user_image", "system_user"}
+            cookie_manager = frappe.local.cookie_manager
+            for cookie in auth_cookies:
+                cookie_manager.cookies.pop(cookie, None)
+            cookie_manager.to_delete = [
+                cookie for cookie in cookie_manager.to_delete if cookie not in auth_cookies
+            ]
+
+        redirect_url = "/login?" + urlencode(
+            {"redirect-to": failed_url}, quote_via=quote
+        )
+
+    frappe.local.response["type"] = "redirect"
+    frappe.local.response["location"] = redirect_url
+
+
 @frappe.whitelist()
 def sync_order_status(order_id, status=None):
     order_doc = _sync_order_status(order_id)
@@ -101,31 +127,35 @@ def sync_order_status(order_id, status=None):
 
 
 def _sync_order_status(order_id=None, status_res=None):
-    order_doc = None
-    if not status_res:
-        if not order_id:
-            frappe.throw("Order id is required.")
+    # Retain the internal callback argument for compatibility, but treat it
+    # only as an order-ID hint. Payment data must come from the status API.
+    if status_res is not None:
+        if not isinstance(status_res, dict):
+            frappe.throw("Invalid order notification.")
+        notified_order_id = status_res.get("order_id")
+        if order_id and notified_order_id and notified_order_id != order_id:
+            frappe.throw("Order notification ID does not match.")
+        order_id = order_id or notified_order_id
 
-        order_doc = frappe.get_doc("HDFC Order", order_id)
+    if not isinstance(order_id, str) or not order_id:
+        frappe.throw("Order id is required.")
 
-        # New orders retain the exact gateway-safe ID used during session
-        # creation. Legacy orders continue using their original customer ID.
-        customer_id = order_doc.get("hdfc_customer_id") or order_doc.customer
-        status_res = api.get_order_status(order_id, customer_id)
+    order_doc = frappe.get_doc("HDFC Order", order_id)
 
-        # Maintain Order Status Response log
-        frappe.get_doc(
-            {
-                "doctype": "HDFC Order Status Logs",
-                "order": order_id,
-                "response": status_res,
-            }
-        ).save(ignore_permissions=True)
-    else:
-        order_doc = frappe.get_doc("HDFC Order", status_res.get("order_id"))
+    # New orders retain the gateway ID used during creation; legacy orders
+    # continue using their original customer ID.
+    customer_id = order_doc.get("hdfc_customer_id") or order_doc.customer
+    status_res = api.get_order_status(order_id, customer_id)
+    _validate_gateway_status(order_doc, status_res)
 
-    if not order_doc:
-        frappe.throw("No Order Found.")
+    # Maintain Order Status Response log using only the authenticated response.
+    frappe.get_doc(
+        {
+            "doctype": "HDFC Order Status Logs",
+            "order": order_id,
+            "response": status_res,
+        }
+    ).save(ignore_permissions=True)
 
     status_data, _ = transformers.parse_order_status_res(status_res)
 
@@ -143,3 +173,37 @@ def _sync_order_status(order_id=None, status_res=None):
             order_doc = order_doc.save(ignore_permissions=True)
 
     return order_doc
+
+
+def _validate_gateway_status(order_doc, status_res):
+    """Reject mismatched settlement data before changing an order or posting."""
+    if not isinstance(status_res, dict) or status_res.get("order_id") != order_doc.name:
+        frappe.throw("Gateway status verification failed: order ID mismatch.")
+
+    try:
+        expected_amount = Decimal(str(order_doc.amount))
+        returned_amount = Decimal(str(status_res.get("amount")))
+    except (InvalidOperation, ValueError, TypeError):
+        frappe.throw("Gateway status verification failed: invalid amount.")
+
+    if (
+        not expected_amount.is_finite()
+        or not returned_amount.is_finite()
+        or returned_amount != expected_amount
+    ):
+        frappe.throw("Gateway status verification failed: amount mismatch.")
+
+    transaction = status_res.get("txn_detail") or {}
+    if not isinstance(transaction, dict):
+        frappe.throw("Gateway status verification failed: invalid transaction details.")
+    currencies = [status_res.get("currency"), transaction.get("currency")]
+    if any(currency and currency != order_doc.currency for currency in currencies):
+        frappe.throw("Gateway status verification failed: currency mismatch.")
+
+    # A non-terminal response may omit transaction details. For settlement,
+    # require a consistent success status and an explicit matching currency.
+    if status_res.get("status_id") in (21, "21") or status_res.get("status") == "CHARGED":
+        if status_res.get("status_id") not in (21, "21") or status_res.get("status") != "CHARGED":
+            frappe.throw("Gateway status verification failed: inconsistent success status.")
+        if not any(currencies) or not order_doc.currency:
+            frappe.throw("Gateway status verification failed: missing settlement currency.")

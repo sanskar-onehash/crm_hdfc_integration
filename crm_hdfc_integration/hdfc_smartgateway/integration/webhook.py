@@ -6,7 +6,12 @@ from crm_hdfc_integration.hdfc_smartgateway.integration import service, utils
 def handle_order():
     content = frappe.form_dict.get("content") or {}
 
+    if not isinstance(content, dict):
+        frappe.throw("Invalid order notification.")
+
     if content.get("order"):
+        # _sync_order_status extracts only the ID and fetches the actual
+        # payment status from HDFC. Never post caller-supplied payment data.
         order_doc = service._sync_order_status(status_res=content.get("order"))
 
         frappe.publish_realtime(

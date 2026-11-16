@@ -1,4 +1,4 @@
-from crm_hdfc_integration.hdfc_smartgateway.integration import client
+from crm_hdfc_integration.hdfc_smartgateway.integration import client, utils
 
 CHECKOUT_INTERFACE_ACTION = "paymentPage"
 
